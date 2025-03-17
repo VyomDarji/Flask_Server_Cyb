@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+</head>
+<body>
+    <h1>Tasks</h1>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.id }}: <strong>{{ task.title }}</strong> &mdash; {{ task.description }}
+                {% if task.done %}(Done){% else %}(Pending){% endif %}
+                <!-- Delete button for each task -->
+                <button onclick="deleteTask({{ task.id }})">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+    <hr>
+    <h2>Add New Task</h2>
+    <form method="post" action="/">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+        <br>
+        <label for="description">Description:</label>
+        <textarea name="description" id="description"></textarea>
+        <br>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <script>
+        function deleteTask(taskId) {
+            fetch('/tasks/' + taskId, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    // Reload the page after successful deletion
+                    window.location.reload();
+                } else {
+                    alert('Failed to delete task.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting task.');
+            });
+        }
+    </script>
+</body>
+</html>
